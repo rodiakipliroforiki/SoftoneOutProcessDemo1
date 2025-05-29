@@ -4,9 +4,51 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SoftoneOutProcessDemo1"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Softone Out Process Demo 1" Height="450" Width="800" Closing="Window_Closing">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="140*"/>
+            <ColumnDefinition Width="280*"/>
+            <ColumnDefinition Width="140*"/>
+            <ColumnDefinition Width="280*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="280*"/>
+        </Grid.RowDefinitions>
+        <Label Content="xdll.dll Path"/>
+        <Label Content="xco Path" Grid.Row="1"/>
+        <Label Content="username" Grid.Row="2"/>
+        <Label Content="password" Grid.Row="2" Grid.Column="2"/>
+        <Label Content="Company" Grid.Row="3"/>
+        <Label Content="Branch" Grid.Row="3" Grid.Column="2"/>
+        <Label Content="Login Date" Grid.Row="4"/>
+        <Label Content="OffLine" Grid.Row="4" Grid.Column="2"/>
+        <TextBox x:Name="tbxdll" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbxco" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbusername" Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center"/>
+        <PasswordBox x:Name="tbpassword" Grid.Row="2" Grid.Column="3" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="tbcompany" Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+        <TextBox x:Name="tbbranch" Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+        <DatePicker x:Name="tbdate" Grid.Row="4" Grid.Column="1" VerticalContentAlignment="Center" SelectedDate="{x:Static sys:DateTime.Now}"/>
+        <Viewbox Grid.Row="4" Grid.Column="3">
+            <CheckBox x:Name="tboffline"  VerticalContentAlignment="Center"/>
+        </Viewbox>
+        <Button x:Name="btnGetXdll" Content="..." Grid.Row="0" Grid.Column="2" Click="btnGetXdll_Click"/>
+        <Button x:Name="btnGetXco" Content="..." Grid.Row="1" Grid.Column="2" Click="btnGetXco_Click"/>
+        <Button x:Name="btnReadSettings" Content="Read Settings" Grid.Row="0" Grid.Column="3" Click="btnReadSettings_Click"/>
+        <Button x:Name="btnSaveSettings" Content="Save Settings" Grid.Row="1" Grid.Column="3" Click="btnSaveSettings_Click"/>
 
+        <UniformGrid Grid.Row="5" Grid.ColumnSpan="4" Rows="1" Columns="5">
+            <Button x:Name="btTest1" Content="Test1" Click="btTest1_Click" />
+        </UniformGrid>
+        <RichTextBox x:Name="rtbLog" Grid.Row="6" Grid.ColumnSpan="4" Margin="4" VerticalScrollBarVisibility="Auto" IsReadOnly="True" AcceptsReturn="True" />
     </Grid>
 </Window>

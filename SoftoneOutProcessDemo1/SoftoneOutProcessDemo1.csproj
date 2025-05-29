@@ -7,7 +7,13 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
+		<ApplicationIcon>softone-connections-logo.ico</ApplicationIcon>
+		<PlatformTarget>x86</PlatformTarget>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Content Include="softone-connections-logo.ico" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.5" />
