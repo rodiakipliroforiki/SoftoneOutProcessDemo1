@@ -21,7 +21,7 @@
 
 	<ItemGroup>
 	  <Reference Include="Softone.Lib">
-	    <HintPath>..\..\..\..\..\..\Softone\softone\Softone.Lib.dll</HintPath>
+	    <HintPath>..\..\..\..\..\..\..\Softone\Latest\Softone.Lib.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 
