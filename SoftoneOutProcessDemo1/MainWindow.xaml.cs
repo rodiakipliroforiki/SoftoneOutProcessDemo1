@@ -153,5 +153,51 @@ namespace SoftoneOutProcessDemo1
                 rtbLog.AppendText($"Error establishing main connection: {ex.Message}\n");
             }
         }
+
+        private void btTest10_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Globals.connectionManager.GetMainConnection();
+                rtbLog.AppendText("Main connection established.\n");
+
+                for (int i = 0; i < 10; i++)
+                {
+                    XConnection a=Globals.connectionManager.GetXConnection(XConnection.ModuleEnum.General);
+                    a.InProcess = true;
+                    var b=a?.X?.SQL("select TOP 1 MTRL from MTRL WHERE COMPANY=:X.SYS.COMPANY AND SODTYPE=51 AND ISACTIVE=1", new object[] {a?.X?.ConnectionInfo.CompanyId });
+                    var c = a?.X?.CreateModule("ITEM");
+                    if (b != null) c?.LocateData(Convert.ToInt32(b));
+                    long TotalMemoryUsed = System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024; //in MB
+                    rtbLog.AppendText($"Main connection {i + 1} established. Memory used {TotalMemoryUsed} MB Total connections {Globals.connectionManager.Connections.Count} \n");
+                    b = null;
+                    c.Dispose();
+                    c = null;
+                }
+
+
+                //Globals.connectionManager.Dispose();
+                //long TotalMemoryUsed1 = System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024; //in MB
+
+                //rtbLog.AppendText($"disconnecting.. Memory used {TotalMemoryUsed1} MB Total connections {Globals.connectionManager.Connections.Count} \n");
+
+
+                foreach (var con in Globals.connectionManager.Connections.ToList())
+                {
+                    con.InProcess = false;
+                    con.Disconnect();
+                    long TotalMemoryUsed = System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024; //in MB
+
+                    rtbLog.AppendText($"disconnecting.. Memory used {TotalMemoryUsed} MB Total connections {Globals.connectionManager.Connections.Count} \n");
+                    Globals.connectionManager.RemoveXConnection(con);
+                    //Thread.Sleep(5000);
+                }
+                //Globals.connectionManager.RemoveXConnection()
+            }
+            catch (Exception ex)
+            {
+                rtbLog.AppendText($"Error establishing main connection: {ex.Message}\n");
+            }
+        }
     }
 }
