@@ -19,10 +19,10 @@
 	  <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.5" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Softone.Lib">
-      <HintPath>..\..\..\..\..\..\..\Softone\Latest\Softone.Lib.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+	  <Reference Include="Softone.Lib">
+	    <HintPath>..\..\..\..\..\..\Softone\softone\Softone.Lib.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
 
 </Project>

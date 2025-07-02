@@ -27,7 +27,10 @@ namespace SoftoneOutProcessDemo1
             Globals.mainWindow = this;
             Globals.loginDate = tbdate.SelectedDate;
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-            XSupport.InitInterop(0, Globals.ConnectionSettings.xdllFilePath);
+            if (!string.IsNullOrEmpty(Globals.ConnectionSettings.xdllFilePath))
+            {
+                XSupport.InitInterop(0, Globals.ConnectionSettings.xdllFilePath);
+            }
         }
 
         private void btnGetXdll_Click(object sender, RoutedEventArgs e)
