@@ -202,5 +202,77 @@ namespace SoftoneOutProcessDemo1
                 rtbLog.AppendText($"Error establishing main connection: {ex.Message}\n");
             }
         }
+
+        private void LogMemoryUsage(string stage)
+        {
+            long TotalMemoryUsed = System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024; //in MB
+            this.Dispatcher.Invoke((Action)delegate
+            {
+                rtbLog.AppendText($"Stage={stage} Memory {TotalMemoryUsed} MB, connections={Globals.connectionManager.Connections.Count} \n");
+            });
+        }
+
+        Queue<int> findocsToOpen = new Queue<int>();
+        private System.Timers.Timer _historyTimer = null;
+        private int iterations = 0;
+        private void btTest100_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                LogMemoryUsage("Starting");
+                XConnection xcon = Globals.connectionManager.GetMainConnection();
+                rtbLog.AppendText("Main connection established.\n");
+                findocsToOpen.Clear();
+                using (XTable t = xcon.X.GetSQLDataSet("SELECT TOP 300 FINDOC FROM FINDOC WHERE SOSOURCE=1351 AND SOREDIR=10000 AND COMPANY=:1 AND BRANCH=:2 AND FISCPRD=:3 ORDER BY FINDOC DESC", new object[] { xcon.X.ConnectionInfo.CompanyId, xcon.X.ConnectionInfo.BranchId, xcon.X.ConnectionInfo.YearId }))
+                {
+                    if (t.Count > 0)
+                    {
+                        for (int j = 0; j < t.Count; j++)
+                        {
+                            findocsToOpen.Enqueue(Convert.ToInt32(t[j, "FINDOC"]));
+                        }
+                    }
+                }
+                LogMemoryUsage("After finding retaildocs");
+
+                if (_historyTimer == null)
+                {
+                    _historyTimer = new System.Timers.Timer();
+                }
+                _historyTimer.Interval = Globals.TestsMin;
+                _historyTimer.Elapsed += (s, ev) =>
+                {
+                    if (findocsToOpen.Count > 0)
+                    {
+                       // this.Dispatcher.Invoke((Action)delegate
+                        //{
+                            int currentiteration=Interlocked.Increment(ref iterations);
+                            LogMemoryUsage($"before # {currentiteration}");
+                            XModuleRetailDoc doc = new XModuleRetailDoc(XConnection.ModuleEnum.RetailDoc);
+                            int findoc = findocsToOpen.Dequeue();
+                            doc.module.LocateData(findoc);
+                            doc.RETAILDOC.Current.Edit(0);
+                            doc.RETAILDOC.Current["COMMENTS1"] = $"Edited at {DateTime.Now.ToLongTimeString}";
+                            doc.RETAILDOC.Current.Post();
+                            doc.module.PostData();
+                            doc.Dispose();
+                            LogMemoryUsage($"after # {currentiteration}");
+                        //});
+                        Random r = new Random();
+                        int rInt = r.Next(Globals.TestsMin, Globals.TestsMax);
+                        _historyTimer.Interval = rInt;
+                    }
+                    else
+                    {
+                        _historyTimer.Stop();                        
+                    }
+                };
+                _historyTimer.Start();
+
+            } catch(Exception ex)
+            {
+                rtbLog.AppendText($"error 100: {ex.Message}");
+            }
+        }
     }
 }

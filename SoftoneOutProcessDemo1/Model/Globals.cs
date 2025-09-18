@@ -15,5 +15,7 @@ namespace SoftoneOutProcessDemo1
         public static int MaxCount = 40;
         public static int ConnectionsHighCount = 10;
         public static int ConnectionsLowCount = 1;
+        public static int TestsMin = 350;
+        public static int TestsMax = 3000;
     }
 }
