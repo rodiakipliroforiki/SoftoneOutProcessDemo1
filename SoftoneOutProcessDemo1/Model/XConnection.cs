@@ -182,7 +182,8 @@ namespace SoftoneOutProcessDemo1
             {
                 if (X != null)
                 {
-                    X.Dispose();
+                    //X.Dispose();
+                    X.Close();
                     X = null;
                     IsLogedIn = false;
                 }

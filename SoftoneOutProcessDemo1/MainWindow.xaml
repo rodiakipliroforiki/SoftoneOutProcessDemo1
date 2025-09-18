@@ -49,7 +49,10 @@
         <UniformGrid Grid.Row="5" Grid.ColumnSpan="4" Rows="1" Columns="5">
             <Button x:Name="btTest1" Content="Test1" Click="btTest1_Click" />
             <Button x:Name="btTest10" Content="Test10" Click="btTest10_Click" Margin="2,0"/>
+            
+            <CheckBox x:Name="cbSQLMonitor" Content="SQL Monitor" VerticalAlignment="Center" HorizontalAlignment="Center" />
             <Button x:Name="btTest100" Content="Test100"  Margin="2,0" Click="btTest100_Click" />
+            <CheckBox x:Name="cbScroll" Content="Scroll to last" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </UniformGrid>
         <RichTextBox x:Name="rtbLog" Grid.Row="6" Grid.ColumnSpan="4" Margin="4" VerticalScrollBarVisibility="Auto" IsReadOnly="True" AcceptsReturn="True" />
     </Grid>

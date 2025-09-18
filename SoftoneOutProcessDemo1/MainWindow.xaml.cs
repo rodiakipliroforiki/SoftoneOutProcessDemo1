@@ -20,6 +20,7 @@ namespace SoftoneOutProcessDemo1
     /// </summary>
     public partial class MainWindow : Window
     {
+        System.Windows.Forms.Form helperForm = null;
         public MainWindow()
         {
             InitializeComponent();
@@ -29,7 +30,11 @@ namespace SoftoneOutProcessDemo1
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             if (!string.IsNullOrEmpty(Globals.ConnectionSettings.xdllFilePath))
             {
-                XSupport.InitInterop(0, Globals.ConnectionSettings.xdllFilePath);
+                helperForm=new System.Windows.Forms.Form();
+                if (helperForm != null)
+                {
+                    XSupport.InitInterop(helperForm.Handle.ToInt32(), Globals.ConnectionSettings.xdllFilePath);
+                }
             }
         }
 
@@ -208,7 +213,15 @@ namespace SoftoneOutProcessDemo1
             long TotalMemoryUsed = System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024; //in MB
             this.Dispatcher.Invoke((Action)delegate
             {
-                rtbLog.AppendText($"Stage={stage} Memory {TotalMemoryUsed} MB, connections={Globals.connectionManager.Connections.Count} \n");
+                if (((string)(new TextRange(rtbLog.Document.ContentStart, rtbLog.Document.ContentEnd).Text)).Length > 10000)
+                {
+                    rtbLog.Document.Blocks.Clear();
+                }
+                rtbLog.AppendText($"{stage}, Memory {TotalMemoryUsed} MB, connections={Globals.connectionManager.Connections.Count} \n");
+                if (cbScroll.IsChecked==true)
+                {
+                    rtbLog.ScrollToEnd();
+                }
             });
         }
 
@@ -221,9 +234,14 @@ namespace SoftoneOutProcessDemo1
             {
                 LogMemoryUsage("Starting");
                 XConnection xcon = Globals.connectionManager.GetMainConnection();
+                if (cbSQLMonitor.IsChecked == true)
+                {
+                    xcon.X.ExecS1Command("ACMD:acSQLMonitor", helperForm);
+                }
+
                 rtbLog.AppendText("Main connection established.\n");
                 findocsToOpen.Clear();
-                using (XTable t = xcon.X.GetSQLDataSet("SELECT TOP 300 FINDOC FROM FINDOC WHERE SOSOURCE=1351 AND SOREDIR=10000 AND COMPANY=:1 AND BRANCH=:2 AND FISCPRD=:3 ORDER BY FINDOC DESC", new object[] { xcon.X.ConnectionInfo.CompanyId, xcon.X.ConnectionInfo.BranchId, xcon.X.ConnectionInfo.YearId }))
+                using (XTable t = xcon.X.GetSQLDataSet("SELECT TOP 3000 FINDOC FROM FINDOC WHERE SOSOURCE=1351 AND SOREDIR=10000 AND COMPANY=:1 AND BRANCH=:2 AND FISCPRD=:3 ORDER BY FINDOC DESC", new object[] { xcon.X.ConnectionInfo.CompanyId, xcon.X.ConnectionInfo.BranchId, xcon.X.ConnectionInfo.YearId }))
                 {
                     if (t.Count > 0)
                     {
@@ -244,19 +262,26 @@ namespace SoftoneOutProcessDemo1
                 {
                     if (findocsToOpen.Count > 0)
                     {
-                       // this.Dispatcher.Invoke((Action)delegate
+                        // this.Dispatcher.Invoke((Action)delegate
                         //{
-                            int currentiteration=Interlocked.Increment(ref iterations);
-                            LogMemoryUsage($"before # {currentiteration}");
+                        try
+                        {
+                            int currentiteration = Interlocked.Increment(ref iterations);
+                            LogMemoryUsage($"+# {currentiteration}");
                             XModuleRetailDoc doc = new XModuleRetailDoc(XConnection.ModuleEnum.RetailDoc);
                             int findoc = findocsToOpen.Dequeue();
                             doc.module.LocateData(findoc);
                             doc.RETAILDOC.Current.Edit(0);
-                            doc.RETAILDOC.Current["COMMENTS1"] = $"Edited at {DateTime.Now.ToLongTimeString}";
+                            doc.RETAILDOC.Current["COMMENTS1"] = $"Edited at {DateTime.Now.ToLongTimeString()}";
                             doc.RETAILDOC.Current.Post();
                             doc.module.PostData();
                             doc.Dispose();
-                            LogMemoryUsage($"after # {currentiteration}");
+                            LogMemoryUsage($"-# {currentiteration}");
+                        } 
+                        catch(Exception ex)
+                        {
+                            LogMemoryUsage($"error # {ex.Message}");
+                        }
                         //});
                         Random r = new Random();
                         int rInt = r.Next(Globals.TestsMin, Globals.TestsMax);

@@ -41,37 +41,38 @@ namespace SoftoneOutProcessDemo1
             {
                 if (disposing)
                 {
+                    module.Close();
                     // TODO: dispose managed state (managed objects)
-                    if (VCARDS!=null)
-                    {
-                        VCARDS.Dispose();
-                        VCARDS = null;
-                    }
-                    if (VBUFSET!=null)
-                    {
-                        VBUFSET.Dispose();
-                        VBUFSET = null;
-                    }
-                    if (ITELINES != null)
-                    {
-                        ITELINES.Dispose();
-                        ITELINES = null;
-                    }
-                    if (MTRDOC != null)
-                    {
-                        MTRDOC.Dispose();
-                        MTRDOC = null;
-                    }
-                    if (RETAILDOC != null)
-                    {
-                        RETAILDOC.Dispose();
-                        RETAILDOC = null;
-                    }
-                    if (module != null)
-                    {
-                        module.Dispose();
-                        module = null;
-                    }
+                    //if (VCARDS!=null)
+                    //{
+                    //    VCARDS.Dispose();
+                    //    VCARDS = null;
+                    //}
+                    //if (VBUFSET!=null)
+                    //{
+                    //    VBUFSET.Dispose();
+                    //    VBUFSET = null;
+                    //}
+                    //if (ITELINES != null)
+                    //{
+                    //    ITELINES.Dispose();
+                    //    ITELINES = null;
+                    //}
+                    //if (MTRDOC != null)
+                    //{
+                    //    MTRDOC.Dispose();
+                    //    MTRDOC = null;
+                    //}
+                    //if (RETAILDOC != null)
+                    //{
+                    //    RETAILDOC.Dispose();
+                    //    RETAILDOC = null;
+                    //}
+                    //if (module != null)
+                    //{
+                    //    module.Dispose();
+                    //    module = null;
+                    //}
                     if (connection != null)
                     {
                         connection.InProcess = false;
